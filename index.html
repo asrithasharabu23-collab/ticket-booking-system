@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}
+Cinema - Home
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================
+     HERO SECTION
+========================= -->
+
+<section class="home-hero">
+
+    <div class="hero-content">
+
+        <div class="hero-small">
+            WELCOME TO CINEMA
+        </div>
+
+        <h1>
+            Your Movie.<br>
+            Your Seats.<br>
+            Your Experience.
+        </h1>
+
+        <p>
+            Discover the latest movies, choose your
+            favourite seats and book your tickets
+            quickly and easily.
+        </p>
+
+        <a
+            href="#movies"
+            class="hero-btn"
+        >
+            🎟️ Explore Movies
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MOVIES SECTION
+========================= -->
+
+<section
+    class="movies-section"
+    id="movies"
+>
+
+    <div class="section-heading">
+
+        <div>
+
+            <div class="heading-small">
+                NOW SHOWING
+            </div>
+
+            <h2>
+                Choose Your Movie
+            </h2>
+
+        </div>
+
+        <p>
+            Select a movie and book your seats
+        </p>
+
+    </div>
+
+
+    <!-- MOVIE CARDS -->
+
+    <div class="movie-grid">
+
+        {% for event in events %}
+
+        <div class="movie-card">
+
+            <!-- MOVIE POSTER -->
+
+            <div class="movie-poster">
+
+                <div class="poster-overlay"></div>
+
+                <span class="movie-type">
+                    MOVIE
+                </span>
+
+                <span class="play-icon">
+                    ▶
+                </span>
+
+            </div>
+
+
+            <!-- MOVIE INFORMATION -->
+
+            <div class="movie-info">
+
+                <h3>
+                    {{ event.name }}
+                </h3>
+
+
+                <div class="movie-details">
+
+                    <span>
+                        📍 {{ event.location }}
+                    </span>
+
+                    <span>
+                        📅 {{ event.date }}
+                    </span>
+
+                    <span>
+                        ⏰ {{ event.time }}
+                    </span>
+
+                </div>
+
+
+                <!-- PRICE -->
+
+                <div class="movie-bottom">
+
+                    <div>
+
+                        <span class="price-label">
+                            TICKET PRICE
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.0f"|format(event.price) }}
+                        </strong>
+
+                    </div>
+
+
+                    <span class="seats-left">
+
+                        🪑
+                        {{ event.available_seats }}
+                        seats
+
+                    </span>
+
+                </div>
+
+
+                <!-- BOOK NOW -->
+
+                <a
+                    href="{{ url_for(
+                        'event_details',
+                        event_id=event.id
+                    ) }}"
+                    class="book-now"
+                >
+
+                    <span>
+                        Book Now
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

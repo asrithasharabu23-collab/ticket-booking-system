@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+{{ event.name }} - Book Tickets
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="booking-page">
+
+
+    <div class="booking-header">
+
+        <a
+            href="{{ url_for('index') }}"
+            class="back-link"
+        >
+            ← Back to Movies
+        </a>
+
+
+        <span class="booking-label">
+            MOVIE TICKET BOOKING
+        </span>
+
+    </div>
+
+
+
+    <div class="booking-layout">
+
+
+        <!-- =========================================
+             MOVIE INFORMATION
+        ========================================== -->
+
+        <div class="movie-preview">
+
+
+            <div class="big-poster">
+
+                <span>
+                    🎬
+                </span>
+
+                <div class="poster-title">
+                    {{ event.name }}
+                </div>
+
+            </div>
+
+
+            <div class="movie-description">
+
+                <h1>
+                    {{ event.name }}
+                </h1>
+
+
+                <div class="movie-meta">
+
+                    <span>
+                        📍
+                        {{ event.location }}
+                    </span>
+
+                    <span>
+                        📅
+                        {{ event.date }}
+                    </span>
+
+                    <span>
+                        ⏰
+                        {{ event.time }}
+                    </span>
+
+                    <span>
+                        💰
+                        ₹{{ "%.0f"|format(event.price) }}
+                        per ticket
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================================
+             BOOKING PANEL
+        ========================================== -->
+
+        <div class="booking-panel">
+
+
+            <div class="panel-heading">
+
+                <span>
+                    SELECT YOUR SEATS
+                </span>
+
+                <h2>
+                    Choose Your Seats
+                </h2>
+
+            </div>
+
+
+
+            <div class="available-box">
+
+                <span>
+                    Available Seats
+                </span>
+
+                <strong>
+                    {{ event.available_seats }}
+                </strong>
+
+            </div>
+
+
+
+            {% if event.available_seats > 0 %}
+
+
+            <form
+                action="{{ url_for(
+                    'book_ticket',
+                    event_id=event.id
+                ) }}"
+                method="POST"
+                class="booking-form"
+            >
+
+
+                <!-- =================================
+                     CINEMA SCREEN
+                ================================== -->
+
+                <div class="cinema-screen">
+
+                    <div class="screen-shape"></div>
+
+                    <p>
+                        SCREEN
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================
+                     SEAT MAP
+                ================================== -->
+
+                <div class="seat-map">
+
+
+                    {% set rows = ['A', 'B', 'C', 'D', 'E', 'F'] %}
+
+
+                    {% for row in rows %}
+
+
+                    <div class="seat-row">
+
+
+                        <span class="row-label">
+                            {{ row }}
+                        </span>
+
+
+                        {% for number in range(1, 11) %}
+
+
+                        {% set seat_name =
+                            row ~ number
+                        %}
+
+
+                        {% if seat_name in booked_seats %}
+
+
+                        <button
+                            type="button"
+                            class="seat occupied"
+                            disabled
+                        >
+                            {{ number }}
+                        </button>
+
+
+                        {% else %}
+
+
+                        <button
+                            type="button"
+                            class="seat"
+                            data-seat="{{ seat_name }}"
+                        >
+                            {{ number }}
+                        </button>
+
+
+                        {% endif %}
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     SEAT LEGEND
+                ================================== -->
+
+                <div class="seat-legend">
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-box"></span>
+
+                        Available
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-box selected"></span>
+
+                        Selected
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-box occupied"></span>
+
+                        Occupied
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     NUMBER OF SEATS
+                ================================== -->
+
+                <label for="number_of_seats">
+
+                    Number of Tickets
+
+                </label>
+
+
+                <div class="seat-selector">
+
+
+                    <button
+                        type="button"
+                        class="seat-control"
+                        id="decreaseSeat"
+                    >
+                        −
+                    </button>
+
+
+                    <input
+                        type="number"
+                        id="number_of_seats"
+                        name="number_of_seats"
+                        value="1"
+                        min="1"
+                        max="{{ event.available_seats }}"
+                        data-price="{{ event.price }}"
+                        readonly
+                    >
+
+
+                    <button
+                        type="button"
+                        class="seat-control"
+                        id="increaseSeat"
+                    >
+                        +
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     HIDDEN SELECTED SEATS
+                ================================== -->
+
+                <input
+                    type="hidden"
+                    name="selected_seats"
+                    id="selectedSeats"
+                >
+
+
+
+                <!-- =================================
+                     PRICE DETAILS
+                ================================== -->
+
+                <div class="price-details">
+
+
+                    <div>
+
+                        <span>
+                            Ticket Price
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.0f"|format(event.price) }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Tickets
+                        </span>
+
+                        <strong id="seatCount">
+                            1
+                        </strong>
+
+                    </div>
+
+
+                    <div class="total-row">
+
+                        <span>
+                            Total Amount
+                        </span>
+
+                        <strong id="totalAmount">
+                            ₹{{ "%.0f"|format(event.price) }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     CONFIRM BUTTON
+                ================================== -->
+
+                <button
+                    type="submit"
+                    class="confirm-btn"
+                >
+                    🎟️ Confirm Booking
+                </button>
+
+
+            </form>
+
+
+            {% else %}
+
+
+            <div class="sold-out-box">
+
+                <div>
+                    😔
+                </div>
+
+                <h2>
+                    Sold Out
+                </h2>
+
+                <p>
+                    Sorry, all seats for this movie
+                    have been booked.
+                </p>
+
+            </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+{% endblock %}
