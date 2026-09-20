@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Booking Successful
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="success-card">
+
+
+    <div class="success-icon">
+        🎉
+    </div>
+
+
+    <h1>
+        Booking Successful!
+    </h1>
+
+
+    <p>
+        Your movie tickets have been booked successfully.
+    </p>
+
+
+
+    <div class="ticket">
+
+
+        <h2>
+            🎬 {{ booking.event.name }}
+        </h2>
+
+
+        <p>
+            📍 {{ booking.event.location }}
+        </p>
+
+
+        <p>
+            📅 {{ booking.event.date }}
+        </p>
+
+
+        <p>
+            ⏰ {{ booking.event.time }}
+        </p>
+
+
+        <hr>
+
+
+        <p>
+
+            <strong>
+                Selected Seats:
+            </strong>
+
+            {{ booking.selected_seats }}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Number of Tickets:
+            </strong>
+
+            {{ booking.number_of_seats }}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Price per Ticket:
+            </strong>
+
+            ₹{{ "%.0f"|format(
+                booking.event.price
+            ) }}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Total Amount:
+            </strong>
+
+            ₹{{ "%.0f"|format(
+                booking.total_amount
+            ) }}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Booking Date:
+            </strong>
+
+            {{ booking.booking_date.strftime(
+                '%d-%m-%Y %I:%M %p'
+            ) }}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Status:
+            </strong>
+
+            <span class="status confirmed">
+                {{ booking.status }}
+            </span>
+
+        </p>
+
+
+    </div>
+
+
+
+    <div class="action-buttons">
+
+
+        <a
+            href="{{ url_for('index') }}"
+        >
+            Browse Movies
+        </a>
+
+
+        <a
+            href="{{ url_for('booking_history') }}"
+            class="secondary"
+        >
+            My Bookings
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
